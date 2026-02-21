@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dunrovin Group — Engineering Documentation</title>
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --muted: #555;
+    --border: #e0dbd4;
+    --bg: #fafaf8;
+    --accent: #2a5caa;
+    --success: #166534;
+    --warning: #92400e;
+    --danger: #991b1b;
+    --code-bg: #1e1e1e;
+    --code-fg: #d4d4d4;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:16px;scroll-behavior:smooth}
+  body{
+    font-family:'Georgia','Times New Roman',serif;
+    line-height:1.8;color:var(--ink);background:var(--bg);
+  }
+  a{color:var(--accent)}
+  h1,h2,h3,h4{font-family:'Georgia',serif;line-height:1.3;color:var(--ink)}
+
+  /* Layout */
+  .doc-layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh;max-width:1300px;margin:auto}
+  .doc-nav{
+    background:#fff;border-right:1px solid var(--border);
+    padding:2rem 1.25rem;position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .doc-nav h2{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#aaa;font-family:sans-serif;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .doc-nav ul{list-style:none;margin-bottom:1.5rem}
+  .doc-nav li a{
+    display:block;padding:.35rem .5rem;border-radius:5px;
+    font-family:sans-serif;font-size:.82rem;color:#555;text-decoration:none;
+    transition:background .12s,color .12s;
+  }
+  .doc-nav li a:hover{background:#f0ece6;color:var(--ink)}
+  .doc-content{padding:3rem 3.5rem;max-width:860px}
+
+  /* Sections */
+  section{margin-bottom:4rem}
+  .section-title{
+    font-size:1.75rem;font-weight:700;margin-bottom:1.5rem;
+    padding-bottom:.875rem;border-bottom:2px solid var(--border);
+    letter-spacing:-.02em;
+  }
+  .section-title span{
+    display:inline-block;background:var(--accent);color:#fff;
+    font-size:.65rem;font-family:sans-serif;font-weight:600;
+    text-transform:uppercase;letter-spacing:.1em;
+    padding:.2rem .6rem;border-radius:4px;vertical-align:middle;margin-left:.6rem;margin-top:-.2rem;
+  }
+  h3{font-size:1.2rem;margin:2rem 0 .875rem;color:var(--ink)}
+  h4{font-size:1rem;margin:1.5rem 0 .625rem;color:var(--muted);font-family:sans-serif;text-transform:uppercase;letter-spacing:.06em}
+  p{margin-bottom:1.25rem;color:#222}
+  li{margin-bottom:.4rem}
+  ul{padding-left:1.5rem;margin-bottom:1.25rem}
+  ul li{list-style:disc}
+  ol{padding-left:1.5rem;margin-bottom:1.25rem}
+  ol li{list-style:decimal}
+
+  /* Cover */
+  .cover{
+    background:linear-gradient(135deg,#1a1a1a,#2a2a2a);
+    color:#eee;padding:3.5rem;margin-bottom:3.5rem;border-radius:12px;
+  }
+  .cover-logo{font-size:2.5rem;font-weight:700;letter-spacing:-.03em;color:#fff;margin-bottom:.25rem}
+  .cover-tagline{font-size:.9rem;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;font-family:sans-serif}
+  .cover-meta{font-family:sans-serif;font-size:.82rem;color:#777;display:flex;gap:1.5rem;flex-wrap:wrap}
+  .cover-meta span{display:flex;align-items:center;gap:.4rem}
+
+  /* Code */
+  pre{
+    background:var(--code-bg);color:var(--code-fg);
+    padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;
+    margin:1.25rem 0;font-size:.83rem;line-height:1.6;
+    font-family:'Courier New','Consolas',monospace;
+  }
+  code{
+    background:#f0ece6;color:#8b0000;padding:.1em .35em;
+    border-radius:3px;font-size:.85em;
+    font-family:'Courier New',monospace;
+  }
+  pre code{background:none;color:inherit;font-size:1em;padding:0}
+
+  /* Tables */
+  table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:.875rem}
+  th{
+    background:#f5f2ef;font-family:sans-serif;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em;color:#555;
+    padding:.625rem .875rem;text-align:left;border-bottom:2px solid var(--border);
+  }
+  td{padding:.5rem .875rem;border-bottom:1px solid var(--border);color:#333;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#faf8f5}
+
+  /* Callouts */
+  .callout{border-radius:8px;padding:1rem 1.25rem;margin:1.25rem 0;font-size:.9rem}
+  .callout-info{background:#eff6ff;border-left:3px solid var(--accent);color:#1e3a5f}
+  .callout-warn{background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f}
+  .callout-danger{background:#fef2f2;border-left:3px solid #ef4444;color:var(--danger)}
+  .callout-success{background:#f0fdf4;border-left:3px solid #22c55e;color:var(--success)}
+  .callout strong{display:block;margin-bottom:.3rem;font-family:sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:.07em}
+
+  /* Badge */
+  .badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-family:sans-serif;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .badge-green{background:#dcfce7;color:#166534}
+  .badge-blue{background:#dbeafe;color:#1e40af}
+  .badge-yellow{background:#fef3c7;color:#92400e}
+  .badge-red{background:#fee2e2;color:var(--danger)}
+
+  /* Folder tree */
+  .tree{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;font-family:monospace;font-size:.83rem;line-height:1.9}
+  .tree .dir{color:#2a5caa;font-weight:600}
+  .tree .file{color:#555}
+  .tree .comment{color:#aaa;font-family:sans-serif;font-size:.78rem}
+
+  /* Checklist */
+  .checklist{list-style:none;padding:0}
+  .checklist li{padding:.35rem 0;border-bottom:1px solid #f0ece6;display:flex;align-items:flex-start;gap:.625rem;font-size:.9rem}
+  .checklist li:last-child{border-bottom:none}
+  .check{color:#22c55e;font-weight:700;flex-shrink:0}
+
+  @media(max-width:768px){
+    .doc-layout{grid-template-columns:1fr}
+    .doc-nav{display:none}
+    .doc-content{padding:2rem 1.25rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-layout">
+
+<!-- Navigation -->
+<nav class="doc-nav">
+  <h2>Documentation</h2>
+  <ul>
+    <li><a href="#overview">Architectural Overview</a></li>
+    <li><a href="#folder">Folder Structure</a></li>
+    <li><a href="#database">Database Schema</a></li>
+    <li><a href="#modules">Functional Modules</a></li>
+    <li><a href="#security">Security Architecture</a></li>
+    <li><a href="#performance">Performance Engineering</a></li>
+    <li><a href="#seo">SEO Infrastructure</a></li>
+    <li><a href="#install">Installation Guide</a></li>
+    <li><a href="#admin-manual">Admin Manual</a></li>
+    <li><a href="#optimization">Optimization Checklist</a></li>
+    <li><a href="#audit">Security Audit Notes</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+</nav>
+
+<!-- Content -->
+<main class="doc-content">
+
+  <!-- Cover -->
+  <div class="cover">
+    <div class="cover-logo">Dunrovin Group</div>
+    <div class="cover-tagline">Engineering Documentation — Production Platform v1.0</div>
+    <div class="cover-meta">
+      <span>📅 February 2026</span>
+      <span>🏗️ PHP 8.2+ · MySQL 8.0+ · Pure HTML/CSS</span>
+      <span>📄 Full Source Code Included</span>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       1. ARCHITECTURAL OVERVIEW
+  ======================================================== -->
+  <section id="overview">
+    <h2 class="section-title">Architectural Overview <span>Core Design</span></h2>
+
+    <p>
+      Dunrovin Group is a production-grade editorial publishing platform built on a lightweight,
+      handcrafted MVC-style PHP architecture. The design philosophy prioritizes <strong>zero
+      unnecessary weight</strong> — no framework overhead, no ORM abstractions, no frontend
+      build tools. Every layer is purposeful, auditable, and optimized for sub-second response times.
+    </p>
+
+    <h3>Design Principles</h3>
+    <ul>
+      <li><strong>Typography-first</strong> — The reading experience governs every spacing and layout decision</li>
+      <li><strong>Security-by-default</strong> — CSRF, XSS, SQLi, session hardening baked in at every layer</li>
+      <li><strong>Performance-obsessed</strong> — Zero framework overhead, optimized queries, lazy images, minifiable CSS/JS</li>
+      <li><strong>SEO-native</strong> — Semantic HTML, structured data, auto-sitemap, canonical URLs</li>
+      <li><strong>Maintainable</strong> — Separation of concerns, consistent naming, documented interfaces</li>
+    </ul>
+
+    <h3>Technology Stack</h3>
+    <table>
+      <tr><th>Layer</th><th>Technology</th><th>Rationale</th></tr>
+      <tr><td>Language</td><td>PHP 8.2+</td><td>Typed properties, match expressions, fibers, JIT</td></tr>
+      <tr><td>Database</td><td>MySQL 8.0+ / InnoDB</td><td>Full-text search, JSON support, window functions</td></tr>
+      <tr><td>Frontend</td><td>Semantic HTML5 + CSS custom properties</td><td>Zero JS framework dependency</td></tr>
+      <tr><td>Typography</td><td>Lora (serif) + Inter (sans)</td><td>Optimal editorial readability</td></tr>
+      <tr><td>Web Server</td><td>Apache 2.4+ / Nginx 1.24+</td><td>mod_rewrite / try_files routing</td></tr>
+      <tr><td>Password Hashing</td><td>Argon2id (PASSWORD_ARGON2ID)</td><td>OWASP recommended since 2019</td></tr>
+    </table>
+
+    <h3>Request Lifecycle</h3>
+    <pre>Browser Request
+    ↓
+.htaccess / nginx → public/index.php (Front Controller)
+    ↓
+Security headers applied
+    ↓
+Session::start() — cookie hardening applied
+    ↓
+Router::dispatch($method, $uri)
+    ↓
+Controller method called (e.g. PublicController::article())
+    ↓
+Model queries database via PDO prepared statements
+    ↓
+View::make($template)->with($data)->layout($layout)->render()
+    ↓
+Layout wraps view template → HTML output</pre>
+  </section>
+
+  <!-- ========================================================
+       2. FOLDER STRUCTURE
+  ======================================================== -->
+  <section id="folder">
+    <h2 class="section-title">Folder Structure <span>File Layout</span></h2>
+
+    <div class="callout callout-info">
+      <strong>Webroot</strong>
+      Only the <code>public/</code> directory is exposed to the web server. All PHP source files,
+      configuration, and database scripts live outside the webroot and are inaccessible via HTTP.
+    </div>
+
+    <div class="tree">
+      <div><span class="dir">dunrovin/</span> <span class="comment">← Project root (above webroot)</span></div>
+      <div>├── <span class="dir">app/</span></div>
+      <div>│   ├── <span class="dir">Controllers/</span></div>
+      <div>│   │   ├── <span class="file">PublicController.php</span> <span class="comment">Home, article, category, search, SEO</span></div>
+      <div>│   │   └── <span class="file">AdminController.php</span> <span class="comment">Auth, CRUD, categories, dashboard</span></div>
+      <div>│   ├── <span class="dir">Models/</span></div>
+      <div>│   │   ├── <span class="file">Database.php</span> <span class="comment">PDO singleton connection</span></div>
+      <div>│   │   ├── <span class="file">ArticleModel.php</span> <span class="comment">Article CRUD + search + sitemap</span></div>
+      <div>│   │   └── <span class="file">Models.php</span> <span class="comment">AuthModel, CategoryModel, TagModel</span></div>
+      <div>│   ├── <span class="dir">Views/</span></div>
+      <div>│   │   ├── <span class="dir">layouts/</span></div>
+      <div>│   │   │   └── <span class="file">public.php</span> <span class="comment">Public layout (header, nav, footer)</span></div>
+      <div>│   │   ├── <span class="dir">public/</span></div>
+      <div>│   │   │   ├── <span class="file">home.php</span></div>
+      <div>│   │   │   ├── <span class="file">article.php</span></div>
+      <div>│   │   │   ├── <span class="file">archive.php</span></div>
+      <div>│   │   │   ├── <span class="file">search.php</span></div>
+      <div>│   │   │   └── <span class="file">404.php</span></div>
+      <div>│   │   └── <span class="dir">admin/</span></div>
+      <div>│   │       ├── <span class="file">login.php</span></div>
+      <div>│   │       ├── <span class="file">dashboard.php</span></div>
+      <div>│   │       ├── <span class="file">categories.php</span></div>
+      <div>│   │       ├── <span class="dir">articles/</span></div>
+      <div>│   │       │   ├── <span class="file">list.php</span></div>
+      <div>│   │       │   └── <span class="file">form.php</span></div>
+      <div>│   │       └── <span class="dir">partials/</span></div>
+      <div>│   │           ├── <span class="file">sidebar.php</span></div>
+      <div>│   │           └── <span class="file">articles_table.php</span></div>
+      <div>│   ├── <span class="dir">Helpers/</span></div>
+      <div>│   │   └── <span class="file">Helpers.php</span> <span class="comment">Security, Str, Session, View, Upload, Paginator</span></div>
+      <div>│   └── <span class="file">Router.php</span></div>
+      <div>├── <span class="dir">config/</span></div>
+      <div>│   └── <span class="file">config.php</span> <span class="comment">All app configuration — never commit credentials</span></div>
+      <div>├── <span class="dir">database/</span></div>
+      <div>│   └── <span class="file">schema.sql</span> <span class="comment">Complete schema + seed data</span></div>
+      <div>├── <span class="dir">public/</span> <span class="comment">← WEBROOT — only directory served</span></div>
+      <div>│   ├── <span class="file">index.php</span> <span class="comment">Front controller</span></div>
+      <div>│   ├── <span class="file">.htaccess</span> <span class="comment">Routing, headers, caching, compression</span></div>
+      <div>│   ├── <span class="dir">css/</span></div>
+      <div>│   │   ├── <span class="file">app.css</span> <span class="comment">Public styles (~18KB unminified)</span></div>
+      <div>│   │   └── <span class="file">admin.css</span> <span class="comment">Admin styles (~14KB unminified)</span></div>
+      <div>│   ├── <span class="dir">js/</span></div>
+      <div>│   │   ├── <span class="file">app.js</span> <span class="comment">Public JS (~2KB — mobile menu, progress bar)</span></div>
+      <div>│   │   └── <span class="file">admin.js</span> <span class="comment">Admin JS (~3KB — editor, previews, counters)</span></div>
+      <div>│   ├── <span class="dir">images/</span></div>
+      <div>│   │   └── <span class="file">favicon.svg</span></div>
+      <div>│   └── <span class="dir">uploads/</span> <span class="comment">User-uploaded media (gitignored)</span></div>
+      <div>│       └── <span class="dir">articles/YYYY/MM/</span></div>
+      <div>└── <span class="file">docs/</span></div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       3. DATABASE SCHEMA
+  ======================================================== -->
+  <section id="database">
+    <h2 class="section-title">Database Schema <span>MySQL 8.0+</span></h2>
+
+    <p>Five focused tables. Every foreign key is enforced at the database level. Indexes are applied to all lookup columns. The articles table uses a composite FULLTEXT index across title, excerpt, and body for natural-language search.</p>
+
+    <table>
+      <tr><th>Table</th><th>Primary Purpose</th><th>Key Columns</th></tr>
+      <tr><td><code>admins</code></td><td>Editorial staff authentication</td><td>email (unique), password (argon2id), role</td></tr>
+      <tr><td><code>categories</code></td><td>Content taxonomy</td><td>slug (unique), name, description</td></tr>
+      <tr><td><code>tags</code></td><td>Granular content labels</td><td>slug (unique), name</td></tr>
+      <tr><td><code>articles</code></td><td>Core content table</td><td>slug (unique), status, published_at, FULLTEXT</td></tr>
+      <tr><td><code>article_tags</code></td><td>Many-to-many pivot</td><td>composite PK (article_id, tag_id)</td></tr>
+    </table>
+
+    <h3>Article Status Flow</h3>
+    <pre>draft → published
+draft → scheduled → (cron trigger) → published
+published → draft  (unpublish)</pre>
+
+    <div class="callout callout-warn">
+      <strong>Scheduled Publishing</strong>
+      Scheduled articles require a cron job to transition status. Add to server crontab:<br>
+      <code>* * * * * php /path/to/dunrovin/bin/publish_scheduled.php</code>
+    </div>
+
+    <h3>Index Strategy</h3>
+    <ul>
+      <li><code>articles.slug</code> — unique B-tree, used on every public article request</li>
+      <li><code>articles.status + published_at</code> — compound index for homepage feed queries</li>
+      <li><code>articles.category_id</code> — category archive queries</li>
+      <li><code>FULLTEXT (title, excerpt, body)</code> — natural language search with relevance ranking</li>
+    </ul>
+  </section>
+
+  <!-- ========================================================
+       4. FUNCTIONAL MODULES
+  ======================================================== -->
+  <section id="modules">
+    <h2 class="section-title">Functional Modules <span>Feature Map</span></h2>
+
+    <table>
+      <tr><th>Module</th><th>Status</th><th>Location</th><th>Notes</th></tr>
+      <tr><td>Admin Authentication</td><td><span class="badge badge-green">✓ Built</span></td><td>AdminController, AuthModel</td><td>Argon2id + rate limiting + session hardening</td></tr>
+      <tr><td>Article Manager</td><td><span class="badge badge-green">✓ Built</span></td><td>AdminController, ArticleModel</td><td>Draft / Published / Scheduled states</td></tr>
+      <tr><td>Category Taxonomy</td><td><span class="badge badge-green">✓ Built</span></td><td>CategoryModel, /admin/categories</td><td>CRUD with article count</td></tr>
+      <tr><td>Tag Taxonomy</td><td><span class="badge badge-green">✓ Built</span></td><td>TagModel, article form checkboxes</td><td>Auto-creates on article save</td></tr>
+      <tr><td>Featured Image Upload</td><td><span class="badge badge-green">✓ Built</span></td><td>Upload helper, article form</td><td>MIME validation, GD resizing, randomized filename</td></tr>
+      <tr><td>Rich Text Editor</td><td><span class="badge badge-green">✓ Built</span></td><td>admin/articles/form.php + admin.js</td><td>contenteditable + execCommand, no CDN dependency</td></tr>
+      <tr><td>Dynamic Search</td><td><span class="badge badge-green">✓ Built</span></td><td>PublicController::search(), ArticleModel::search()</td><td>MySQL FULLTEXT with relevance ranking</td></tr>
+      <tr><td>Pagination</td><td><span class="badge badge-green">✓ Built</span></td><td>Paginator helper</td><td>Rel prev/next, accessible ARIA</td></tr>
+      <tr><td>Category Archive</td><td><span class="badge badge-green">✓ Built</span></td><td>PublicController::category()</td><td>Filtered + paginated</td></tr>
+      <tr><td>XML Sitemap</td><td><span class="badge badge-green">✓ Built</span></td><td>PublicController::sitemap()</td><td>/sitemap.xml — auto-updated on publish</td></tr>
+      <tr><td>robots.txt</td><td><span class="badge badge-green">✓ Built</span></td><td>PublicController::robots()</td><td>Blocks admin, references sitemap</td></tr>
+      <tr><td>SEO Meta Fields</td><td><span class="badge badge-green">✓ Built</span></td><td>Article form sidebar</td><td>Custom title + description per article</td></tr>
+      <tr><td>Open Graph</td><td><span class="badge badge-green">✓ Built</span></td><td>Public layout head</td><td>og:title, og:description, og:image</td></tr>
+      <tr><td>Schema.org JSON-LD</td><td><span class="badge badge-green">✓ Built</span></td><td>Public layout (article context)</td><td>Article schema with author + datePublished</td></tr>
+      <tr><td>Reading Progress Bar</td><td><span class="badge badge-green">✓ Built</span></td><td>article.php + app.js</td><td>Scroll-position driven, CSS animated</td></tr>
+      <tr><td>Reading Time Estimate</td><td><span class="badge badge-green">✓ Built</span></td><td>ArticleModel::bindArticleData()</td><td>238 WPM average, auto-calculated on save</td></tr>
+      <tr><td>Admin Dashboard</td><td><span class="badge badge-green">✓ Built</span></td><td>AdminController::dashboard()</td><td>Stats grid + recent articles</td></tr>
+      <tr><td>Slug Generator</td><td><span class="badge badge-green">✓ Built</span></td><td>Str::slug() + admin.js</td><td>Auto-generates from title, uniqueness enforced</td></tr>
+    </table>
+  </section>
+
+  <!-- ========================================================
+       5. SECURITY ARCHITECTURE
+  ======================================================== -->
+  <section id="security">
+    <h2 class="section-title">Security Architecture <span>Production-Grade</span></h2>
+
+    <h3>CSRF Protection</h3>
+    <p>Every state-changing POST request requires a matching <code>csrf_token</code> generated via <code>random_bytes(32)</code> and stored in the session. Tokens are compared using <code>hash_equals()</code> to prevent timing attacks. Tokens regenerate after each use.</p>
+
+    <h3>XSS Prevention</h3>
+    <ul>
+      <li>All output from user data is run through <code>htmlspecialchars($v, ENT_QUOTES | ENT_HTML5, 'UTF-8')</code></li>
+      <li>The <code>Security::clean()</code> helper recursively sanitizes arrays</li>
+      <li>Article bodies stored raw (to preserve rich HTML) but only editable by authenticated admins</li>
+      <li>Future enhancement: add HTMLPurifier for body sanitization on save</li>
+    </ul>
+
+    <h3>SQL Injection Prevention</h3>
+    <p>All database queries use PDO prepared statements with named or positional parameters. <code>PDO::ATTR_EMULATE_PREPARES</code> is set to <code>false</code> to force true server-side preparation. No query concatenation exists in the codebase.</p>
+
+    <h3>Password Security</h3>
+    <ul>
+      <li>Argon2id with <code>memory_cost=65536</code>, <code>time_cost=4</code>, <code>threads=1</code></li>
+      <li>Auto-rehash on login if algorithm or parameters have been upgraded</li>
+      <li>Default seeded password must be changed on first login (see Installation)</li>
+    </ul>
+
+    <h3>Session Hardening</h3>
+    <ul>
+      <li>Custom session name (<code>dg_sess</code>) to avoid default PHP session fingerprinting</li>
+      <li><code>HttpOnly</code>, <code>Secure</code> (production), <code>SameSite=Lax</code> cookie flags</li>
+      <li>Session ID regenerated every 5 minutes and on privilege changes</li>
+      <li>2-hour session lifetime with idle-based expiry</li>
+    </ul>
+
+    <h3>Rate Limiting (Login)</h3>
+    <p>After <code>MAX_LOGIN_ATTEMPTS</code> (default: 5) failed attempts, the account is locked for <code>LOCKOUT_MINUTES</code> (default: 15 minutes) based on email address. Implemented in session storage; consider Redis for distributed environments.</p>
+
+    <h3>HTTP Security Headers</h3>
+    <table>
+      <tr><th>Header</th><th>Value</th></tr>
+      <tr><td>X-Content-Type-Options</td><td>nosniff</td></tr>
+      <tr><td>X-Frame-Options</td><td>SAMEORIGIN</td></tr>
+      <tr><td>X-XSS-Protection</td><td>1; mode=block</td></tr>
+      <tr><td>Referrer-Policy</td><td>strict-origin-when-cross-origin</td></tr>
+      <tr><td>Strict-Transport-Security</td><td>max-age=31536000 (production only)</td></tr>
+    </table>
+
+    <h3>File Upload Security</h3>
+    <ul>
+      <li>MIME type verified via <code>finfo_file()</code> (not file extension alone)</li>
+      <li>Max size enforced server-side (5MB default)</li>
+      <li>Uploaded files stored with cryptographically random filenames (<code>random_bytes(12)</code>)</li>
+      <li>Images optionally resized via GD to strip EXIF metadata and enforce dimension limits</li>
+      <li>Upload directory should have <code>Options -ExecCGI</code> and <code>php_flag engine off</code> in production</li>
+    </ul>
+
+    <div class="callout callout-danger">
+      <strong>Critical: Change Default Credentials</strong>
+      The seeded admin password placeholder in schema.sql is NOT a valid hash. You must run the
+      <code>bin/create_admin.php</code> script or update the database directly with a real Argon2id hash
+      before the platform is accessible.
+    </div>
+  </section>
+
+  <!-- ========================================================
+       6. PERFORMANCE ENGINEERING
+  ======================================================== -->
+  <section id="performance">
+    <h2 class="section-title">Performance Engineering <span>Sub-2s Target</span></h2>
+
+    <h3>Core Web Vitals Strategy</h3>
+    <table>
+      <tr><th>Metric</th><th>Target</th><th>Implementation</th></tr>
+      <tr><td>LCP (Largest Contentful Paint)</td><td>&lt; 1.5s</td><td>Featured image eager-loaded, fonts async, no render-blocking resources</td></tr>
+      <tr><td>FID / INP (Interactivity)</td><td>&lt; 50ms</td><td>Zero JS framework, 2.5KB deferred JS, no main-thread blocking</td></tr>
+      <tr><td>CLS (Cumulative Layout Shift)</td><td>&lt; 0.05</td><td>All images have explicit width/height attributes</td></tr>
+      <tr><td>TTFB (Time to First Byte)</td><td>&lt; 300ms</td><td>Optimized MySQL queries, connection pooling, PHP OPcache</td></tr>
+    </table>
+
+    <h3>Asset Optimization</h3>
+    <ul>
+      <li><strong>CSS</strong>: Two files total (~32KB combined). Minify with <code>csso</code> or <code>clean-css</code> to ~18KB. No unused selectors.</li>
+      <li><strong>JS</strong>: Two files total (~5KB combined). Minify to ~3KB. Zero runtime dependencies.</li>
+      <li><strong>Fonts</strong>: Loaded via <code>media="print" onload="this.media='all'"</code> — eliminates render-blocking</li>
+      <li><strong>Images</strong>: All non-hero images use <code>loading="lazy" decoding="async"</code></li>
+    </ul>
+
+    <h3>Database Optimization</h3>
+    <ul>
+      <li>PDO singleton — single connection per request lifecycle</li>
+      <li>All queries use prepared statements (server-side caching of query plans)</li>
+      <li>Only required columns selected (no <code>SELECT *</code> except admin single-row lookups)</li>
+      <li>View count updates are fire-and-forget (non-blocking)</li>
+      <li>FULLTEXT index eliminates table scans for search</li>
+    </ul>
+
+    <h3>Server Configuration Recommendations</h3>
+    <pre># PHP OPcache (php.ini)
+opcache.enable=1
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=10000
+opcache.validate_timestamps=0     # production only
+opcache.jit=tracing
+opcache.jit_buffer_size=100M
+
+# MySQL (my.cnf)
+innodb_buffer_pool_size=256M
+query_cache_type=0                # deprecated in 8.0
+innodb_flush_log_at_trx_commit=2  # balance of safety/speed</pre>
+  </section>
+
+  <!-- ========================================================
+       7. SEO INFRASTRUCTURE
+  ======================================================== -->
+  <section id="seo">
+    <h2 class="section-title">SEO Infrastructure <span>Technical SEO</span></h2>
+
+    <ul>
+      <li><strong>Canonical URLs</strong>: Set on all article pages to prevent duplicate content</li>
+      <li><strong>Meta title &amp; description</strong>: Per-article overrides with fallback to article title / excerpt</li>
+      <li><strong>Open Graph tags</strong>: Complete og:title, og:description, og:image, og:type, og:site_name</li>
+      <li><strong>Schema.org Article</strong>: JSON-LD with headline, author, datePublished, publisher</li>
+      <li><strong>XML Sitemap</strong>: Auto-generated at <code>/sitemap.xml</code>, includes all published articles + categories + static pages</li>
+      <li><strong>robots.txt</strong>: Dynamically served, blocks admin + search params, references sitemap</li>
+      <li><strong>Semantic HTML</strong>: Correct use of <code>&lt;article&gt;</code>, <code>&lt;time datetime&gt;</code>, <code>&lt;nav aria-label&gt;</code>, heading hierarchy</li>
+      <li><strong>Slug strategy</strong>: Clean, human-readable, auto-generated with uniqueness enforcement</li>
+      <li><strong>Pagination</strong>: <code>rel="prev"</code> and <code>rel="next"</code> on paginated feeds</li>
+      <li><strong>HTTPS</strong>: HSTS header in production; canonical URLs use <code>https://</code></li>
+    </ul>
+  </section>
+
+  <!-- ========================================================
+       8. INSTALLATION GUIDE
+  ======================================================== -->
+  <section id="install">
+    <h2 class="section-title">Installation Guide <span>Step-by-Step</span></h2>
+
+    <h3>Requirements</h3>
+    <ul>
+      <li>PHP 8.2+ with extensions: <code>pdo_mysql</code>, <code>gd</code>, <code>mbstring</code>, <code>fileinfo</code></li>
+      <li>MySQL 8.0+ or MariaDB 10.6+</li>
+      <li>Apache 2.4+ with <code>mod_rewrite</code> enabled (or Nginx)</li>
+    </ul>
+
+    <h3>Step 1 — Clone / Upload Files</h3>
+    <pre>git clone https://github.com/youraccount/dunrovin.git /var/www/dunrovin
+# OR upload via FTP/SFTP to your server</pre>
+
+    <h3>Step 2 — Configure Web Server</h3>
+    <pre># Apache Virtual Host
+&lt;VirtualHost *:80&gt;
+    ServerName dunrovingroup.com
+    ServerAlias www.dunrovingroup.com
+    DocumentRoot /var/www/dunrovin/public
+
+    &lt;Directory /var/www/dunrovin/public&gt;
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+
+# Nginx alternative
+server {
+    listen 80;
+    server_name dunrovingroup.com;
+    root /var/www/dunrovin/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+    location ~ /\. { deny all; }
+}</pre>
+
+    <h3>Step 3 — Create Database</h3>
+    <pre>mysql -u root -p &lt;&lt;SQL
+CREATE DATABASE dunrovin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'dunrovin_user'@'localhost' IDENTIFIED BY 'your_strong_password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON dunrovin.* TO 'dunrovin_user'@'localhost';
+FLUSH PRIVILEGES;
+SQL
+
+# Import schema
+mysql -u dunrovin_user -p dunrovin &lt; /var/www/dunrovin/database/schema.sql</pre>
+
+    <h3>Step 4 — Configure Environment</h3>
+    <p>Edit <code>config/config.php</code> or set environment variables:</p>
+    <pre># Option A: Environment variables (recommended for production)
+export APP_URL="https://dunrovingroup.com"
+export APP_ENV="production"
+export DB_HOST="127.0.0.1"
+export DB_NAME="dunrovin"
+export DB_USER="dunrovin_user"
+export DB_PASS="your_strong_password"
+
+# Option B: Edit config/config.php directly (ensure file is not web-accessible)</pre>
+
+    <h3>Step 5 — Set File Permissions</h3>
+    <pre>find /var/www/dunrovin -type f -name "*.php" -exec chmod 644 {} \;
+find /var/www/dunrovin -type d -exec chmod 755 {} \;
+chmod 755 /var/www/dunrovin/public/uploads
+chown -R www-data:www-data /var/www/dunrovin/public/uploads</pre>
+
+    <h3>Step 6 — Create Admin Account</h3>
+    <pre># Run this PHP snippet once to generate a proper password hash:
+php -r "echo password_hash('YourNewPassword!', PASSWORD_ARGON2ID, ['memory_cost'=&gt;65536,'time_cost'=&gt;4,'threads'=&gt;1]);"
+
+# Update the database:
+mysql -u dunrovin_user -p dunrovin &lt;&lt;SQL
+UPDATE admins SET password='[paste hash here]', email='real@email.com' WHERE username='superadmin';
+SQL</pre>
+
+    <h3>Step 7 — Enable HTTPS (Let's Encrypt)</h3>
+    <pre>certbot --apache -d dunrovingroup.com -d www.dunrovingroup.com</pre>
+
+    <h3>Step 8 — Verify Installation</h3>
+    <ul>
+      <li>Visit <code>https://dunrovingroup.com</code> — homepage loads</li>
+      <li>Visit <code>https://dunrovingroup.com/admin/login</code> — login form appears</li>
+      <li>Visit <code>https://dunrovingroup.com/sitemap.xml</code> — XML sitemap renders</li>
+      <li>Visit <code>https://dunrovingroup.com/robots.txt</code> — robots file renders</li>
+    </ul>
+  </section>
+
+  <!-- ========================================================
+       9. ADMIN MANUAL
+  ======================================================== -->
+  <section id="admin-manual">
+    <h2 class="section-title">Admin Manual <span>Editorial Guide</span></h2>
+
+    <h3>Accessing the Admin Panel</h3>
+    <p>Navigate to <code>https://yourdomain.com/admin/login</code>. Enter your email and password. After 5 failed attempts, access is locked for 15 minutes.</p>
+
+    <h3>Dashboard</h3>
+    <p>The dashboard displays key metrics at a glance: published article count, draft count, scheduled articles, total page views, categories, and tags. Recent articles are listed with status badges and direct edit links.</p>
+
+    <h3>Creating an Article</h3>
+    <ol>
+      <li>Click <strong>+ New Article</strong> in the navigation or dashboard</li>
+      <li>Enter a <strong>Title</strong> — the URL slug auto-generates as you type</li>
+      <li>Write or paste content in the <strong>body editor</strong> (use toolbar for formatting)</li>
+      <li>Add an <strong>Excerpt</strong> (shown in article listings; 400 char max)</li>
+      <li>Select a <strong>Category</strong> from the sidebar dropdown</li>
+      <li>Check relevant <strong>Tags</strong> (or new ones can be added via Categories page)</li>
+      <li>Upload a <strong>Featured Image</strong> (JPG/PNG/WebP, max 5MB)</li>
+      <li>Fill in <strong>SEO meta title and description</strong> if different from article defaults</li>
+      <li>Set <strong>Status</strong>: Draft (saves privately), Published (live), Scheduled (set date)</li>
+      <li>Click <strong>Create Article</strong></li>
+    </ol>
+
+    <h3>Editing an Article</h3>
+    <p>From Articles list, click <strong>Edit</strong>. All fields are editable. Slug can be manually adjusted — if changed after indexing, ensure redirects are in place. Click <strong>Update Article</strong> to save. A "View Live" button appears for published articles.</p>
+
+    <h3>Managing Categories</h3>
+    <p>Navigate to <strong>Categories</strong> in the sidebar. The left panel shows existing categories with article counts. The right panel has a form to create new categories — names are automatically slugified. Categories cannot be deleted if articles are assigned (set to NULL on cascade).</p>
+
+    <h3>Article Status Reference</h3>
+    <table>
+      <tr><th>Status</th><th>Visibility</th><th>Notes</th></tr>
+      <tr><td><span class="badge badge-yellow">Draft</span></td><td>Admin only</td><td>Not visible on public site</td></tr>
+      <tr><td><span class="badge badge-green">Published</span></td><td>Public</td><td>Immediately visible; set published_at for display date</td></tr>
+      <tr><td><span class="badge badge-blue">Scheduled</span></td><td>Future</td><td>Requires cron job to auto-publish</td></tr>
+    </table>
+
+    <h3>Image Guidelines</h3>
+    <ul>
+      <li>Supported formats: JPEG, PNG, WebP</li>
+      <li>Maximum file size: 5MB</li>
+      <li>Recommended dimensions: 1200×630px (Open Graph optimal)</li>
+      <li>Images are automatically resized to max 1600×900 on upload</li>
+      <li>Filenames are randomized for security</li>
+    </ul>
+  </section>
+
+  <!-- ========================================================
+       10. OPTIMIZATION CHECKLIST
+  ======================================================== -->
+  <section id="optimization">
+    <h2 class="section-title">Optimization Checklist <span>Go-Live</span></h2>
+
+    <ul class="checklist">
+      <li><span class="check">✓</span> PHP OPcache enabled and configured with JIT</li>
+      <li><span class="check">✓</span> MySQL InnoDB buffer pool sized to available RAM</li>
+      <li><span class="check">✓</span> FULLTEXT indexes created on articles table</li>
+      <li><span class="check">✓</span> All images have explicit width/height (CLS prevention)</li>
+      <li><span class="check">✓</span> Non-critical images use loading="lazy" decoding="async"</li>
+      <li><span class="check">✓</span> Google Fonts loaded non-render-blocking (media print trick)</li>
+      <li><span class="check">✓</span> All JS deferred — zero render-blocking scripts</li>
+      <li><span class="check">✓</span> Apache mod_deflate enabled (gzip CSS/HTML/JS)</li>
+      <li><span class="check">✓</span> Apache mod_expires configured (1 year for assets)</li>
+      <li><span class="check">○</span> Minify app.css → ~10KB with clean-css</li>
+      <li><span class="check">○</span> Minify admin.css → ~8KB</li>
+      <li><span class="check">○</span> Minify app.js + admin.js → ~3KB combined</li>
+      <li><span class="check">○</span> Convert featured images to WebP format at upload</li>
+      <li><span class="check">○</span> Enable HTTP/2 on web server</li>
+      <li><span class="check">○</span> CDN for static assets (CSS, JS, images)</li>
+      <li><span class="check">○</span> Redis/Memcached for article list caching (high-traffic)</li>
+      <li><span class="check">○</span> Add <code>srcset</code> responsive images for featured images</li>
+      <li><span class="check">○</span> Run Lighthouse audit — target 95+ Performance score</li>
+      <li><span class="check">○</span> Submit sitemap to Google Search Console</li>
+      <li><span class="check">○</span> Enable HTTPS + configure HSTS preload</li>
+    </ul>
+  </section>
+
+  <!-- ========================================================
+       11. SECURITY AUDIT NOTES
+  ======================================================== -->
+  <section id="audit">
+    <h2 class="section-title">Security Audit Notes <span>Hardening</span></h2>
+
+    <div class="callout callout-success">
+      <strong>Built-In Protections</strong>
+      CSRF tokens on all POST requests · XSS output escaping · PDO prepared statements ·
+      Argon2id password hashing · Session ID regeneration · Cookie hardening · Login rate limiting ·
+      MIME-validated file uploads · Randomized upload filenames · Security HTTP headers
+    </div>
+
+    <h3>Pre-Launch Security Checklist</h3>
+    <ul class="checklist">
+      <li><span class="check">✓</span> <code>APP_ENV=production</code> set — disables error display</li>
+      <li><span class="check">✓</span> <code>display_errors=0</code> in php.ini</li>
+      <li><span class="check">✓</span> Database user has ONLY required privileges (SELECT/INSERT/UPDATE/DELETE)</li>
+      <li><span class="check">✓</span> Default admin credentials changed</li>
+      <li><span class="check">✓</span> <code>config/config.php</code> is outside webroot</li>
+      <li><span class="check">○</span> Add <code>php_flag engine off</code> to uploads directory</li>
+      <li><span class="check">○</span> Add <code>Content-Security-Policy</code> header (after testing)</li>
+      <li><span class="check">○</span> Add <code>Permissions-Policy</code> header</li>
+      <li><span class="check">○</span> Implement HTMLPurifier for article body sanitization</li>
+      <li><span class="check">○</span> Move session rate limiting to Redis for distributed deployments</li>
+      <li><span class="check">○</span> Run OWASP ZAP scan against staging environment</li>
+      <li><span class="check">○</span> Set up <code>fail2ban</code> rules for admin login endpoint</li>
+      <li><span class="check">○</span> Enable MySQL audit log for compliance environments</li>
+      <li><span class="check">○</span> Review and restrict CORS headers if API endpoints are added</li>
+      <li><span class="check">○</span> Schedule automated dependency vulnerability scanning</li>
+    </ul>
+
+    <h3>Known Limitations &amp; Recommended Enhancements</h3>
+    <table>
+      <tr><th>Area</th><th>Current State</th><th>Recommended Enhancement</th></tr>
+      <tr><td>Body HTML sanitization</td><td>Raw HTML stored (admin-only input)</td><td>Integrate HTMLPurifier on save</td></tr>
+      <tr><td>Rate limiting storage</td><td>PHP session-based</td><td>Move to Redis for multi-server deployments</td></tr>
+      <tr><td>Two-factor authentication</td><td>Not implemented</td><td>Add TOTP (Google Authenticator compatible)</td></tr>
+      <tr><td>Audit logging</td><td>Not implemented</td><td>Log all admin actions to <code>audit_log</code> table</td></tr>
+      <tr><td>CSP header</td><td>Not set (complex with inline styles/fonts)</td><td>Add nonce-based CSP after testing</td></tr>
+      <tr><td>Brute force protection</td><td>Session-based, resets if session cleared</td><td>IP-based rate limiting at nginx/fail2ban level</td></tr>
+    </table>
+  </section>
+
+  <!-- ========================================================
+       12. ROADMAP
+  ======================================================== -->
+  <section id="roadmap">
+    <h2 class="section-title">Roadmap <span>Future Development</span></h2>
+
+    <h4>Phase 2 — Enhanced Editorial</h4>
+    <ul>
+      <li>Multiple admin users with role-based access (super/editor/contributor)</li>
+      <li>Article revision history with diff viewer</li>
+      <li>Inline image upload within article body</li>
+      <li>Author profiles with byline pages</li>
+      <li>Email newsletter integration (Mailchimp/Buttondown API)</li>
+    </ul>
+
+    <h4>Phase 3 — Reader Engagement</h4>
+    <ul>
+      <li>Comment system (moderated, with spam filtering)</li>
+      <li>Reading list / bookmarks (localStorage or authenticated)</li>
+      <li>Related articles recommendation engine</li>
+      <li>Article series / collections</li>
+    </ul>
+
+    <h4>Phase 4 — Performance &amp; Scale</h4>
+    <ul>
+      <li>Redis caching layer for article feeds</li>
+      <li>CDN integration for media assets</li>
+      <li>WebP auto-conversion at upload</li>
+      <li>srcset responsive images</li>
+      <li>Server-side rendering cache with ETag support</li>
+    </ul>
+
+    <h4>Phase 5 — Analytics &amp; SEO</h4>
+    <ul>
+      <li>Privacy-respecting built-in analytics (no third-party scripts)</li>
+      <li>Popular articles feed from view_count</li>
+      <li>Automated social preview image generation</li>
+      <li>AMP (Accelerated Mobile Pages) output for eligible articles</li>
+    </ul>
+  </section>
+
+</main>
+</div>
+
+</body>
+</html>
